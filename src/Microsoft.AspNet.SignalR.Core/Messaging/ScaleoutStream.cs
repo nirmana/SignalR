@@ -111,7 +111,7 @@ namespace Microsoft.AspNet.SignalR.Messaging
 
         public void SetError(Exception error)
         {
-            Trace("Error has happened with the following exception: {0}.", SourceLevels.Error, error);
+            Trace("Error has happened with the following exception: {0}.", TraceEventType.Error, error);
 
             lock (_lockObj)
             {
@@ -167,7 +167,7 @@ namespace Microsoft.AspNet.SignalR.Messaging
             {
                 var ctx = (SendContext)obj;
 
-                ctx.Stream.Trace("Send failed: {0}", SourceLevels.Error, ex);
+                ctx.Stream.Trace("Send failed: {0}", TraceEventType.Error, ex);
 
                 lock (ctx.Stream._lockObj)
                 {
@@ -244,7 +244,7 @@ namespace Microsoft.AspNet.SignalR.Messaging
 
             if (_state != newState)
             {
-                Trace("Changed state from {0} to {1}", SourceLevels.Information, _state, newState);
+                Trace("Changed state from {0} to {1}", TraceEventType.Information, _state, newState);
 
                 _state = newState;
                 return true;
@@ -270,16 +270,9 @@ namespace Microsoft.AspNet.SignalR.Messaging
             return tcs.Task;
         }
 
-        private void Trace(string value, SourceLevels traceLevel, params object[] args)
+        private void Trace(string value, TraceEventType traceEventType, params object[] args)
         {
-            if (traceLevel == SourceLevels.Error)
-            {
-                _trace.TraceError(_tracePrefix + " - " + value, args);
-            }
-            else
-            {
-                _trace.TraceInformation(_tracePrefix + " - " + value, args);
-            }
+            _trace.TraceEvent(traceEventType, 0, _tracePrefix + " - " + value, args);
         }
 
         private class SendContext
