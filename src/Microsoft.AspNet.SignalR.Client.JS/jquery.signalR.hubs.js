@@ -105,6 +105,7 @@
 
             // Map the callback to our encompassed function
             callbackMap[eventName][callback] = function (e, data) {
+                connection.log("Hub " + that.hubName + " invoked event " + eventName + " on the client");
                 callback.apply(that, data);
             };
 
@@ -189,6 +190,7 @@
                         d.rejectWith(that, [error]);
                     } else {
                         // Server invocation succeeded, resolve the deferred
+                        connection.log("Invoked method " + methodName + " on hub " + that.hubName);
                         d.resolveWith(that, [result.Result]);
                     }
                 };
